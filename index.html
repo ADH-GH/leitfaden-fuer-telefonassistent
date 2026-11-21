@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gesprächsleitfaden für den Telefonassistenten</title>
+<style>
+:root{--bg:oklch(19% .022 258);--panel:oklch(23.5% .024 258);--raise:oklch(28.5% .025 258);--ink:oklch(95% .008 250);
+--ink2:oklch(82% .014 252);--mute:oklch(70% .018 253);--line:oklch(32% .025 258);--grid:oklch(27.5% .022 258);
+--accent:oklch(65.8% .128 251);--onaccent:oklch(16% .02 258);--glow:oklch(65.8% .128 251 / .18);
+--crit:oklch(70% .19 22);--high:oklch(78% .14 80);--auto:oklch(70% .14 155);
+--mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+--sans:"IBM Plex Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+--display:"Sora",ui-sans-serif,system-ui,-apple-system,sans-serif}
+*{box-sizing:border-box}html{color-scheme:dark}
+body{margin:0;background:var(--bg);color:var(--ink);font:14.5px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--display);letter-spacing:-.01em}:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+header,main{max-width:1180px;margin:0 auto;padding:0 32px}header{margin-top:32px}main{padding-bottom:64px}
+.kicker{font:500 12.5px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.kicker::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--glow);margin-right:10px;vertical-align:1px}
+h1{margin:22px 0 13px;font:600 38px/1.1 var(--display);letter-spacing:-.02em}
+.sub{color:var(--mute);font-size:13.5px;margin:0 0 8px;max-width:70ch}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:16px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:9px 12px 10px}
+.tile b{display:block;font:500 28px/1.1 var(--mono);letter-spacing:-.02em;color:var(--accent);white-space:nowrap}
+.tile i{display:block;font:500 10.5px/1.3 var(--mono);font-style:normal;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-top:6px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:20px;margin-top:12px;min-width:0}
+.card h2{margin:0 0 4px;font:600 18px/1.3 var(--display);color:var(--ink)}.card p.sub{margin-bottom:14px}
+.duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:12px}
+label{display:block;font:500 10.5px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:12px 0 5px}
+input,select,textarea{width:100%;height:36px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:14px var(--sans)}
+textarea{height:auto;padding:10px;font:13px/1.5 var(--mono)}
+button{height:36px;font:600 14px/1 var(--sans);border-radius:8px;padding:0 16px;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--ink)}
+button:hover{background:var(--raise)}button.ok{border-color:var(--accent);background:var(--accent);color:var(--onaccent)}
+button[disabled]{opacity:.45;cursor:not-allowed}
+table{border-collapse:collapse;width:100%;font-size:13.5px}th,td{text-align:left;padding:8px;border-bottom:1px solid var(--grid);vertical-align:top}
+th{font:500 10.5px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}td.num,th.num{text-align:right;font-family:var(--mono)}
+.tag{display:inline-block;font:500 11px/1.8 var(--mono);letter-spacing:.04em;border:1px solid currentColor;border-radius:6px;padding:0 8px;margin:0 4px 0 0;white-space:nowrap}
+.tag.auto{color:var(--auto)}.tag.appr{color:var(--high)}.tag.crit{color:var(--crit)}.tag.info{color:var(--accent)}
+.mute{color:var(--mute)}.mono{font-family:var(--mono)}
+footer{max-width:1180px;margin:0 auto;padding:0 32px 40px;color:var(--mute);font-size:12.5px;line-height:1.6}
+@media(max-width:720px){header,main,footer{padding-left:16px;padding-right:16px}h1{font-size:28px}.card{overflow-x:auto}}
+
+/* Ergaenzungen fuer dieses Tool */
+.tag{margin-bottom:4px;white-space:normal}
+.klein{font-size:12.5px;color:var(--mute);margin:2px 0 0}
+.zeile{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.fehler{color:var(--crit);font-size:13px;min-height:1.2em;margin:8px 0 0}
+.posten{border:1px solid var(--line);border-radius:8px;padding:12px;margin-top:10px;background:var(--bg)}
+input[type=checkbox]{width:18px;height:18px;padding:0;accent-color:var(--accent);vertical-align:middle;flex:none}
+.check{display:flex;gap:8px;align-items:flex-start;text-transform:none;letter-spacing:0;font:13.5px/1.4 var(--sans);color:var(--ink);margin:8px 0 0}
+.check input{margin-top:2px}
+button.schmal{height:30px;padding:0 12px;font-size:13px}
+#gespraech{margin-top:12px;display:flex;flex-direction:column;gap:6px;min-height:60px}
+.wort{max-width:86%;padding:8px 11px;border-radius:8px;border:1px solid var(--line);font-size:13.5px;line-height:1.45}
+.wort.agent{align-self:flex-start;background:var(--bg)}
+.wort.anrufer{align-self:flex-end;background:var(--raise)}
+.wort small{display:block;font:500 10px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:2px}
+h3{font-size:14px;margin:16px 0 0}
+#prompt{min-height:260px;white-space:pre-wrap;font:12.5px/1.5 var(--mono)}
+.kopfzeile{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;justify-content:space-between}
+.kopfzeile .rechts{min-width:280px}.kopfzeile .rechts label{margin-top:0}
+</style>
+</head>
+<body>
+<header>
+  <div class="kicker">Showroom ADH · Telefonassistent</div>
+  <h1>Gesprächsleitfaden für den Telefonassistenten</h1>
+  <p class="sub">Ein Sprachassistent nimmt Störungen entgegen, wenn niemand abhebt. Der Leitfaden legt fest, was er fragt und wann ein Mensch übernimmt, Probeanrufe prüfen jede Änderung, und nichts gilt am Telefon ohne Freigabe. Firma, Anrufe und Personen sind erfunden, es wird nicht telefoniert.</p>
+  <div class="tiles" id="tiles" aria-live="polite">
+    <div class="tile"><b id="kOffen">0</b><i>Tickets offen</i></div>
+    <div class="tile"><b id="kBereit">0</b><i>davon bei der Bereitschaft</i></div>
+    <div class="tile"><b id="kTests">0</b><i>Probeanrufe bestanden</i></div>
+    <div class="tile"><b id="kFassung">3</b><i>Fassung des Leitfadens</i></div>
+    <div class="tile"><b id="kStand">frei</b><i>Stand des Leitfadens</i></div>
+  </div>
+</header>
+
+<main>
+  <section class="card" id="karteTickets" aria-labelledby="hTickets">
+    <div class="kopfzeile">
+      <div>
+        <h2 id="hTickets">Tickets aus den Anrufen</h2>
+        <p class="sub">Jeder Anruf endet als Ticket bei der zuständigen Stelle, ein Notfall sofort bei der Bereitschaft.</p>
+      </div>
+      <div class="rechts"><label for="wer">Angemeldet als</label><select id="wer"></select></div>
+    </div>
+    <table id="tabTickets">
+      <thead><tr><th>Ticket</th><th>Anliegen</th><th>Aufgenommen</th><th>Zuständig</th><th>Rückruf</th><th>Stand</th><th></th></tr></thead>
+      <tbody id="ticketsBody"></tbody>
+    </table>
+    <label class="check" for="abw-weber"><input type="checkbox" id="abw-weber"> <span>Jonas Weber hat Bereitschaft und ist nicht erreichbar, Sven Krause übernimmt</span></label>
+    <p class="fehler" id="fehlerTickets" role="alert"></p>
+  </section>
+
+  <div class="duo">
+    <section class="card" id="karteAnruf" aria-labelledby="hAnruf">
+      <h2 id="hAnruf">Probeanruf</h2>
+      <p class="sub">Das Gespräch läuft nach dem Leitfaden rechts. Hier führt es eine feste Regel, am Telefon ein Sprachassistent mit denselben Vorgaben.</p>
+      <label for="beispiel">Anrufer</label>
+      <select id="beispiel"></select>
+      <div class="zeile"><button type="button" class="ok" id="bAnrufen">Probeanruf führen</button></div>
+      <div id="gespraech" aria-live="polite"></div>
+      <div id="ergebnis"></div>
+    </section>
+
+    <section class="card" id="karteLeitfaden" aria-labelledby="hLeitfaden">
+      <h2 id="hLeitfaden">Leitfaden</h2>
+      <p class="sub">Regeln und Pflichtangaben. Jede Änderung macht eine neue Fassung, die erst nach Freigabe gilt.</p>
+      <h3>Regeln</h3>
+      <div id="regeln"></div>
+      <h3>Pflichtangaben je Anliegen</h3>
+      <div id="felder"></div>
+      <p class="fehler" id="fehlerLeitfaden" role="alert"></p>
+    </section>
+  </div>
+
+  <div class="duo">
+    <section class="card" id="karteTests" aria-labelledby="hTests">
+      <h2 id="hTests">Probeanrufe als Prüfung</h2>
+      <p class="sub">Zu jedem Probeanruf steht fest, wo er landen muss. Die Prüfung läuft bei jeder Änderung des Leitfadens.</p>
+      <table id="tabTests">
+        <thead><tr><th>Probeanruf</th><th>Muss landen bei</th><th>Landet bei</th><th></th></tr></thead>
+        <tbody id="testsBody"></tbody>
+      </table>
+      <h3>Freigabe</h3>
+      <div id="freigabeStand" aria-live="polite"></div>
+      <div class="zeile"><button type="button" class="ok" id="bFreigeben">Fassung freigeben</button></div>
+      <p class="fehler" id="fehlerFreigabe" role="alert"></p>
+    </section>
+
+    <section class="card" id="kartePrompt" aria-labelledby="hPrompt">
+      <h2 id="hPrompt">Anweisung an den Sprachassistenten</h2>
+      <p class="sub">Entsteht aus dem Leitfaden. Diese Fassung bekommt der Assistent erst nach der Freigabe.</p>
+      <label for="prompt">Anweisung</label>
+      <textarea id="prompt" readonly spellcheck="false"></textarea>
+    </section>
+  </div>
+
+  <section class="card" id="karteProtokoll" aria-labelledby="hProtokoll">
+    <h2 id="hProtokoll">Protokoll</h2>
+    <p class="sub">Änderungen am Leitfaden, Freigaben und was mit den Tickets geschah. Der neueste Eintrag zuerst.</p>
+    <table id="tabProtokoll">
+      <thead><tr><th>Zeit</th><th>Wer</th><th>Vorgang</th></tr></thead>
+      <tbody id="protokollBody"></tbody>
+    </table>
+  </section>
+
+  <section class="card" id="karteSystem" aria-labelledby="hSystem">
+    <h2 id="hSystem">So wird daraus Ihr System</h2>
+    <table>
+      <tbody>
+        <tr><th scope="row">Einführung</th><td>Wir nehmen Ihre Anliegen, Pflichtangaben und Notfallregeln auf, richten den Sprachassistenten mit Ihrer Ansage ein und prüfen ihn mit Probeanrufen aus Ihrem Alltag.</td></tr>
+        <tr><th scope="row">Anbindung</th><td>Der Assistent hängt an Ihrer Telefonanlage. Tickets entstehen in Ihrem Kundendienstsystem oder im ERP, etwa in Odoo oder SAP, die Bereitschaft wird über Microsoft 365 oder per Anruf verständigt.</td></tr>
+        <tr><th scope="row">Schulung</th><td>Kundendienst und Bereitschaft lernen, den Leitfaden selbst zu pflegen, Probeanrufe zu schreiben und Änderungen freizugeben.</td></tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+
+<footer>Showroom ADH, 03.12.2026. Beispieldaten. Alle Eingaben bleiben in diesem Browserfenster. Auf dieser Seite spricht kein Sprachmodell, die Gespräche führt eine feste Regel mit hinterlegten Antworten.</footer>
+
+<script>
+"use strict";
+/* ---------- Stammdaten (Beispiel, erfunden) ---------- */
+var FIRMA = "Beispiel Kältetechnik";
+var P = {
+  albrecht: { n: "Sophie Albrecht", r: "Leitung Kundendienst" },
+  weber:    { n: "Jonas Weber", r: "Techniker, Bereitschaft diese Woche" },
+  krause:   { n: "Sven Krause", r: "Techniker, Vertretung der Bereitschaft" },
+  neumann:  { n: "Clara Neumann", r: "Disposition" },
+  richter:  { n: "Paul Richter", r: "Buchhaltung" },
+  keller:   { n: "Andreas Keller", r: "Geschäftsführung" }
+};
+var PID = ["albrecht", "weber", "krause", "neumann", "richter", "keller"];
+var ANLIEGEN = { stoerung: "Störung an einer Anlage", termin: "Wartungstermin", rechnung: "Frage zur Rechnung", beschwerde: "Beschwerde", sonst: "Sonstiges" };
+var FELD = {
+  kunde:    { n: "Firma und Standort", frage: "Für welche Firma und welchen Standort rufen Sie an?" },
+  anlage:   { n: "Anlage", frage: "Um welche Anlage geht es?" },
+  ausfall:  { n: "Was ausgefallen ist", frage: "Was genau ist ausgefallen, und zeigt die Anlage eine Meldung?" },
+  seit:     { n: "Seit wann", frage: "Seit wann besteht die Störung?" },
+  zeitraum: { n: "Wunschzeitraum", frage: "Wann würde Ihnen ein Termin passen?" },
+  rechnung: { n: "Rechnungsnummer", frage: "Wie lautet die Rechnungsnummer?" },
+  rueckruf: { n: "Rückrufnummer", frage: "Unter welcher Nummer erreichen wir Sie?" }
+};
+var FELDER = { stoerung: ["kunde", "anlage", "ausfall", "seit", "rueckruf"], termin: ["kunde", "anlage", "zeitraum", "rueckruf"], rechnung: ["kunde", "rechnung", "rueckruf"], beschwerde: ["kunde", "rueckruf"], sonst: ["kunde", "rueckruf"] };
+var REGEL = {
+  ansage:     { n: "Der Assistent sagt zu Beginn, dass er ein KI-Assistent ist", fest: true },
+  notfall:    { n: "Steigt die Temperatur oder ist Ware in Gefahr, geht der Anruf sofort an die Bereitschaft" },
+  notruf:     { n: "Bei Geruch, Zischen oder Gefahr für Menschen nennt er den Notruf und verständigt die Bereitschaft" },
+  beschwerde: { n: "Eine Beschwerde nimmt er nur auf und gibt sie an die Leitung Kundendienst" },
+  preise:     { n: "Er nennt keine Preise, sagt keine Termine zu und stellt keine Diagnose", fest: true }
+};
+var RID = ["ansage", "notfall", "notruf", "beschwerde", "preise"];
+var ZIEL = {
+  bereitschaft:   { n: "Bereitschaft", frist: "sofort" },
+  disposition:    { n: "Disposition", frist: "nächster Werktag bis 9 Uhr" },
+  buchhaltung:    { n: "Buchhaltung", frist: "binnen zwei Werktagen" },
+  serviceleitung: { n: "Leitung Kundendienst", frist: "nächster Werktag vormittags" }
+};
+var BEISPIELE = [
+  { id: "B1", n: "Supermarkt, Tiefkühlung ausgefallen", muss: "bereitschaft",
+    sagt: "Hier ist der Markt in Beispielstadt. Unsere Tiefkühlung ist komplett ausgefallen, die Temperatur steigt.",
+    nennt: { kunde: "Markt in Beispielstadt", ausfall: "Tiefkühlung komplett ausgefallen, Temperatur steigt" },
+    antwort: { anlage: "Die Tiefkühlinsel im Verkaufsraum.", seit: "Seit etwa einer halben Stunde.", rueckruf: "Unter der Nummer, von der ich anrufe." } },
+  { id: "B2", n: "Gastronomie, Wartung verschieben", muss: "disposition",
+    sagt: "Guten Tag, Muster Gastronomie hier. Wir müssten den Wartungstermin nächste Woche verschieben.",
+    nennt: { kunde: "Muster Gastronomie" },
+    antwort: { anlage: "Die Kühlzelle in der Küche.", zeitraum: "In der Woche danach, am liebsten vormittags.", rueckruf: "Unter der Nummer, von der ich anrufe." } },
+  { id: "B3", n: "Feinkost, Frage zur Rechnung", muss: "buchhaltung",
+    sagt: "Ich habe eine Frage zu Ihrer letzten Rechnung.",
+    nennt: {},
+    antwort: { kunde: "Demo Feinkost in Musterdorf.", rueckruf: "Unter der Nummer, von der ich anrufe." } },
+  { id: "B4", n: "Hotel, Beschwerde", muss: "serviceleitung",
+    sagt: "Das ist jetzt schon das dritte Mal, dass Ihr Techniker nicht gekommen ist. Ich möchte mich beschweren.",
+    nennt: {},
+    antwort: { kunde: "Probe Hotel am See.", rueckruf: "Unter der Nummer, von der ich anrufe." } },
+  { id: "B5", n: "Stadtküche, Geruch im Kühlraum", muss: "bereitschaft", mussNotruf: true,
+    sagt: "Bei uns im Kühlraum zischt es, und es riecht stechend.",
+    nennt: { ausfall: "Zischen und stechender Geruch im Kühlraum" },
+    antwort: { kunde: "Stadtküche Beispielstadt.", anlage: "Der Kühlraum im Keller.", seit: "Gerade eben bemerkt.", rueckruf: "Unter der Nummer, von der ich anrufe." } }
+];
+
+/* ---------- Zustand ---------- */
+var L = { regel: { ansage: true, notfall: true, notruf: true, beschwerde: true, preise: true }, feld: {} };
+var fassung = 3, stand = "frei", autoren = [], freiVon = "keller";
+var tickets = [], protokoll = [], laufendeNr = 101, abwWeber = false, letzter = null;
+
+/* ---------- Helfer ---------- */
+function $(id) { return document.getElementById(id); }
+function h(tag, attrs, kinder) {
+  var e = document.createElement(tag), k;
+  if (attrs) for (k in attrs) {
+    if (k === "text") e.textContent = attrs[k];
+    else if (k === "klasse") e.className = attrs[k];
+    else e.setAttribute(k, attrs[k]);
+  }
+  (kinder || []).forEach(function (c) { if (c) e.appendChild(c); });
+  return e;
+}
+function tag(text, klasse) { return h("span", { klasse: "tag " + klasse, text: text }); }
+function zwei(n) { return (n < 10 ? "0" : "") + n; }
+function jetzt() { var d = new Date(); return zwei(d.getHours()) + ":" + zwei(d.getMinutes()) + ":" + zwei(d.getSeconds()); }
+function logge(wer, was) { protokoll.unshift({ zeit: jetzt(), wer: wer, was: was }); }
+function beispiel(id) { return BEISPIELE.filter(function (b) { return b.id === id; })[0]; }
+
+/* ---------- Das Gespraech nach Leitfaden (feste Regel) ---------- */
+var RE_BESCHWERDE = /beschwer|dritte mal|unverschämt/i, RE_STOERUNG = /ausgefallen|störung|alarm|kühlt nicht|defekt|läuft nicht/i;
+var RE_TERMIN = /termin|wartung/i, RE_RECHNUNG = /rechnung/i;
+var RE_NOTFALL = /temperatur steigt|komplett ausgefallen|ware|tiefkühl/i, RE_GEFAHR = /zischt|riecht|geruch|verletzt|rauch/i;
+function fuehre(b) {
+  var T = [], alles = b.sagt + " " + Object.keys(b.antwort).map(function (k) { return b.antwort[k]; }).join(" ");
+  function agent(t) { T.push({ wer: "agent", t: t }); }
+  function anrufer(t) { T.push({ wer: "anrufer", t: t }); }
+  agent(FIRMA + ", guten Abend. " + (L.regel.ansage ? "Ich bin ein KI-Assistent und nehme Ihr Anliegen auf. " : "") + "Was kann ich für Sie tun?");
+  anrufer(b.sagt);
+  var gefahr = RE_GEFAHR.test(alles), notfall = RE_NOTFALL.test(alles), anliegen;
+  if (RE_BESCHWERDE.test(b.sagt)) anliegen = "beschwerde";
+  else if (RE_STOERUNG.test(b.sagt) || gefahr) anliegen = "stoerung";
+  else if (RE_TERMIN.test(b.sagt)) anliegen = "termin";
+  else if (RE_RECHNUNG.test(b.sagt)) anliegen = "rechnung";
+  else anliegen = "sonst";
+  var notrufGesagt = false;
+  if (gefahr && L.regel.notruf) { agent("Bitte verlassen Sie den Raum. Wenn Menschen in Gefahr sind, rufen Sie den Notruf eins eins zwei. Ich verständige jetzt unsere Bereitschaft und brauche dafür noch wenige Angaben."); notrufGesagt = true; }
+  if (anliegen === "beschwerde" && L.regel.beschwerde) agent("Das tut mir leid. Ich nehme Ihre Beschwerde auf und gebe sie an unsere Leitung Kundendienst, die sich bei Ihnen meldet.");
+  var werte = {}, fehlt = [];
+  FELDER[anliegen].forEach(function (f) {
+    if (!L.feld[anliegen][f]) return;
+    if (b.nennt[f]) { werte[f] = b.nennt[f]; return; }
+    agent(FELD[f].frage);
+    if (b.antwort[f]) { anrufer(b.antwort[f]); werte[f] = b.antwort[f].replace(/\.$/, ""); }
+    else { anrufer("Das weiß ich gerade nicht."); fehlt.push(f); }
+  });
+  var ziel;
+  if (gefahr && L.regel.notruf) ziel = "bereitschaft";
+  else if (anliegen === "stoerung" && notfall && L.regel.notfall) ziel = "bereitschaft";
+  else if (anliegen === "beschwerde" && L.regel.beschwerde) ziel = "serviceleitung";
+  else if (anliegen === "rechnung") ziel = "buchhaltung";
+  else ziel = "disposition";
+  var kurz = FELDER[anliegen].filter(function (f) { return werte[f] && f !== "rueckruf"; }).map(function (f) { return werte[f]; }).join(". ");
+  agent("Ich fasse zusammen: " + ANLIEGEN[anliegen] + ". " + kurz + ". Ist das richtig?");
+  anrufer("Ja.");
+  if (ziel === "bereitschaft") agent("Ich verständige jetzt unsere Bereitschaft. Sie werden in den nächsten Minuten zurückgerufen.");
+  else agent("Danke. " + ZIEL[ziel].n + " meldet sich bei Ihnen, " + ZIEL[ziel].frist + ". Einen Termin oder einen Preis kann ich Ihnen nicht zusagen.");
+  return { T: T, anliegen: anliegen, ziel: ziel, werte: werte, fehlt: fehlt, kurz: kurz, notruf: notrufGesagt, gefahr: gefahr, fragen: T.filter(function (x) { return x.wer === "agent"; }).length - 3 - (notrufGesagt ? 1 : 0) - (anliegen === "beschwerde" && L.regel.beschwerde ? 1 : 0) };
+}
+function besteht(b, r) { return r.ziel === b.muss && (!b.mussNotruf || r.notruf) && L.regel.ansage; }
+function alleTests() { return BEISPIELE.map(function (b) { var r = fuehre(b); return { b: b, r: r, ok: besteht(b, r) }; }); }
+function zustaendig(t) {
+  if (t.ziel === "bereitschaft") return abwWeber ? "krause" : "weber";
+  if (t.ziel === "disposition") return "neumann";
+  if (t.ziel === "buchhaltung") return "richter";
+  return "albrecht";
+}
+
+/* ---------- Anzeige ---------- */
+function zeigeTickets() {
+  var body = $("ticketsBody"), offen = 0, bereit = 0;
+  body.textContent = "";
+  tickets.forEach(function (t) {
+    var zu = zustaendig(t), tdA = h("td"), st;
+    if (t.stand !== "erledigt") { offen++; if (t.ziel === "bereitschaft") bereit++; }
+    if (t.stand === "erledigt") st = tag("erledigt von " + P[t.von].n, "auto");
+    else if (t.stand === "uebernommen") st = tag("übernommen von " + P[t.von].n, "info");
+    else st = tag(t.ziel === "bereitschaft" ? "Bereitschaft verständigt, wartet" : "wartet auf Rückruf", t.ziel === "bereitschaft" ? "crit" : "appr");
+    if (t.stand !== "erledigt") {
+      var kn = h("button", { type: "button", klasse: "schmal", id: (t.stand === "offen" ? "nimm-" : "fertig-") + t.id, text: t.stand === "offen" ? "Übernehmen" : "Erledigt" });
+      kn.addEventListener("click", function () {
+        var wer = $("wer").value, zz = zustaendig(t);
+        if (wer !== zz) { $("fehlerTickets").textContent = t.id + " liegt bei " + P[zz].n + ", " + ZIEL[t.ziel].n + "."; return; }
+        $("fehlerTickets").textContent = "";
+        t.von = wer;
+        if (t.stand === "offen") { t.stand = "uebernommen"; logge(t.von, t.id + " übernommen" + (t.ziel === "bereitschaft" && abwWeber ? " in Vertretung der Bereitschaft" : "") + "."); }
+        else { t.stand = "erledigt"; logge(t.von, t.id + " erledigt."); }
+        zeigeAlles();
+      });
+      tdA.appendChild(kn);
+    }
+    var tdT = h("td", null, [h("div", { text: ANLIEGEN[t.anliegen] }), h("div", { klasse: "klein", text: t.kurz })]);
+    if (t.probe) tdT.appendChild(tag("Probeanruf", "info"));
+    if (t.gefahr) tdT.appendChild(tag("Gefahr gemeldet", "crit"));
+    if (t.fehlt.length) tdT.appendChild(tag("fehlt: " + t.fehlt.map(function (f) { return FELD[f].n; }).join(", "), "appr"));
+    body.appendChild(h("tr", { id: "zeile-" + t.id }, [
+      h("td", { klasse: "mono", text: t.id }), tdT, h("td", { klasse: "mono", text: t.zeit }),
+      h("td", null, [h("div", { text: ZIEL[t.ziel].n }), h("div", { klasse: "klein", text: P[zu].n })]),
+      h("td", { text: ZIEL[t.ziel].frist }), h("td", null, [st]), tdA
+    ]));
+  });
+  $("kOffen").textContent = String(offen);
+  $("kBereit").textContent = String(bereit);
+}
+function zeigeAnruf() {
+  var g = $("gespraech"), e = $("ergebnis");
+  g.textContent = ""; e.textContent = "";
+  if (!letzter) { g.appendChild(h("p", { klasse: "mute", text: "Noch kein Probeanruf geführt." })); return; }
+  letzter.r.T.forEach(function (x) {
+    g.appendChild(h("div", { klasse: "wort " + x.wer }, [h("small", { text: x.wer === "agent" ? "Assistent" : "Anrufer" }), document.createTextNode(x.t)]));
+  });
+  var r = letzter.r, teile = [h("div", null, [tag(ANLIEGEN[r.anliegen], "info"), tag("geht an: " + ZIEL[r.ziel].n + ", " + ZIEL[r.ziel].frist, r.ziel === "bereitschaft" ? "crit" : "appr")])];
+  if (r.notruf) teile.push(h("div", null, [tag("Notruf genannt", "crit")]));
+  if (r.fehlt.length) teile.push(h("div", null, [tag("unvollständig: " + r.fehlt.map(function (f) { return FELD[f].n; }).join(", "), "appr")]));
+  teile.push(h("div", { klasse: "klein", text: "Ticket " + letzter.ticket + " angelegt. Rückfragen des Assistenten: " + r.fragen + "." }));
+  e.appendChild(h("div", { klasse: "posten" }, teile));
+}
+function zeigeLeitfaden() {
+  var rg = $("regeln"), fl = $("felder");
+  rg.textContent = ""; fl.textContent = "";
+  RID.forEach(function (k) {
+    var cb = h("input", { type: "checkbox", id: "r-" + k });
+    cb.checked = L.regel[k]; cb.disabled = !!REGEL[k].fest;
+    cb.addEventListener("change", function () { aendere(function () { L.regel[k] = cb.checked; }, "Regel „" + REGEL[k].n + "“ " + (cb.checked ? "eingeschaltet" : "ausgeschaltet") + "."); });
+    rg.appendChild(h("label", { klasse: "check", "for": "r-" + k }, [cb, h("span", null, [document.createTextNode(REGEL[k].n + ". "), REGEL[k].fest ? tag("fest, nicht abschaltbar", "info") : null])]));
+  });
+  ["stoerung", "termin", "rechnung", "beschwerde"].forEach(function (a) {
+    var box = h("div", { klasse: "posten" }, [h("div", null, [h("b", { text: ANLIEGEN[a] })])]);
+    FELDER[a].forEach(function (f) {
+      var cb = h("input", { type: "checkbox", id: "f-" + a + "-" + f });
+      cb.checked = L.feld[a][f];
+      cb.addEventListener("change", function () { aendere(function () { L.feld[a][f] = cb.checked; }, "Pflichtangabe „" + FELD[f].n + "“ bei " + ANLIEGEN[a] + " " + (cb.checked ? "eingeschaltet" : "ausgeschaltet") + "."); });
+      box.appendChild(h("label", { klasse: "check", "for": "f-" + a + "-" + f }, [cb, h("span", { text: FELD[f].n })]));
+    });
+    fl.appendChild(box);
+  });
+}
+function zeigeTests() {
+  var body = $("testsBody"), tests = alleTests(), ok = tests.filter(function (x) { return x.ok; }).length, box = $("freigabeStand");
+  body.textContent = ""; box.textContent = "";
+  tests.forEach(function (x) {
+    body.appendChild(h("tr", { id: "test-" + x.b.id }, [
+      h("td", null, [h("div", { text: x.b.n }), h("div", { klasse: "klein", text: "„" + x.b.sagt + "“" })]),
+      h("td", { text: ZIEL[x.b.muss].n + (x.b.mussNotruf ? ", mit Hinweis auf den Notruf" : "") }),
+      h("td", { text: ZIEL[x.r.ziel].n + (x.r.notruf ? ", Notruf genannt" : "") }),
+      h("td", null, [tag(x.ok ? "bestanden" : "durchgefallen", x.ok ? "auto" : "crit")])
+    ]));
+  });
+  $("kTests").textContent = ok + " von " + tests.length;
+  $("kFassung").textContent = String(fassung);
+  $("kStand").textContent = stand === "frei" ? "frei" : "Entwurf";
+  if (stand === "frei") box.appendChild(tag("Fassung " + fassung + " ist freigegeben von " + P[freiVon].n + " und gilt am Telefon", "auto"));
+  else {
+    box.appendChild(tag("Fassung " + fassung + " ist ein Entwurf, am Telefon gilt Fassung " + (fassung - 1), "appr"));
+    box.appendChild(h("div", { klasse: "klein", text: "Geändert von " + autoren.map(function (a) { return P[a].n; }).join(", ") + ". Freigabe durch eine zweite Person, in der Regel die Geschäftsführung, wenn alle Probeanrufe bestehen." }));
+    if (ok < tests.length) box.appendChild(tag((tests.length - ok) + (tests.length - ok === 1 ? " Probeanruf fällt durch" : " Probeanrufe fallen durch") + ", Freigabe gesperrt", "crit"));
+  }
+  $("bFreigeben").disabled = stand === "frei";
+}
+function zeigePrompt() {
+  var Z = [];
+  Z.push("Du nimmst für " + FIRMA + " Anrufe entgegen, wenn niemand abhebt. Du sprichst Deutsch, ruhig und in kurzen Sätzen.", "");
+  Z.push("Fassung " + fassung + (stand === "frei" ? ", freigegeben." : ", Entwurf, noch nicht freigegeben."), "");
+  Z.push("Regeln:");
+  RID.forEach(function (k) { if (L.regel[k]) Z.push("- " + REGEL[k].n + "."); });
+  Z.push("- Fehlt eine Pflichtangabe, fragst du einmal nach. Weiß der Anrufer sie nicht, nimmst du das Anliegen trotzdem auf und vermerkst, was fehlt.");
+  Z.push("- Am Ende fasst du zusammen und lässt dir die Zusammenfassung bestätigen.", "");
+  Z.push("Pflichtangaben:");
+  ["stoerung", "termin", "rechnung", "beschwerde"].forEach(function (a) {
+    Z.push("- " + ANLIEGEN[a] + ": " + (FELDER[a].filter(function (f) { return L.feld[a][f]; }).map(function (f) { return FELD[f].n; }).join(", ") || "keine") + ".");
+  });
+  Z.push("", "Wohin das Anliegen geht:");
+  Z.push("- " + (L.regel.notfall ? "Störung mit steigender Temperatur oder Ware in Gefahr: sofort Bereitschaft." : "Jede Störung: Disposition, nächster Werktag bis 9 Uhr."));
+  Z.push("- Störung ohne Eile und Wartungstermin: Disposition, " + ZIEL.disposition.frist + ".");
+  Z.push("- Frage zur Rechnung: Buchhaltung, " + ZIEL.buchhaltung.frist + ".");
+  Z.push("- Beschwerde: " + (L.regel.beschwerde ? "Leitung Kundendienst, " + ZIEL.serviceleitung.frist + "." : "Disposition, " + ZIEL.disposition.frist + "."));
+  $("prompt").value = Z.join("\n");
+}
+function zeigeProtokoll() {
+  var body = $("protokollBody");
+  body.textContent = "";
+  protokoll.slice(0, 50).forEach(function (e) {
+    body.appendChild(h("tr", null, [h("td", { klasse: "mono", text: e.zeit }), h("td", { text: P[e.wer] ? P[e.wer].n : "Assistent" }), h("td", { text: e.was })]));
+  });
+}
+function zeigeAlles() { zeigeTickets(); zeigeAnruf(); zeigeLeitfaden(); zeigeTests(); zeigePrompt(); zeigeProtokoll(); }
+
+/* ---------- Vorgaenge ---------- */
+function aendere(fn, text) {
+  var wer = $("wer").value, f = $("fehlerLeitfaden");
+  f.textContent = ""; $("fehlerFreigabe").textContent = "";
+  if (wer !== "albrecht" && wer !== "keller") { f.textContent = "Den Leitfaden ändert die Leitung Kundendienst."; zeigeLeitfaden(); return; }
+  fn();
+  if (stand === "frei") { fassung++; stand = "entwurf"; autoren = []; }
+  if (autoren.indexOf(wer) < 0) autoren.push(wer);
+  logge(wer, "Leitfaden, Fassung " + fassung + ": " + text);
+  zeigeAlles();
+}
+function freigeben() {
+  var wer = $("wer").value, f = $("fehlerFreigabe"), tests = alleTests(), durch = tests.filter(function (x) { return !x.ok; });
+  f.textContent = "";
+  if (durch.length) { f.textContent = "Nicht bestanden: " + durch.map(function (x) { return x.b.n; }).join("; ") + "."; return; }
+  var freigeber = autoren.indexOf("keller") >= 0 ? "albrecht" : "keller";
+  if (autoren.indexOf(wer) >= 0) { f.textContent = "Wer den Leitfaden geändert hat, gibt ihn nicht frei."; return; }
+  if (wer !== freigeber) { f.textContent = "Diese Fassung gibt frei: " + P[freigeber].n + ", " + P[freigeber].r + "."; return; }
+  stand = "frei"; freiVon = wer;
+  logge(wer, "Leitfaden, Fassung " + fassung + " freigegeben. Alle " + tests.length + " Probeanrufe bestanden. Die Fassung gilt jetzt am Telefon.");
+  zeigeAlles();
+}
+function anrufen() {
+  var b = beispiel($("beispiel").value), r = fuehre(b);
+  var t = { id: "T-" + laufendeNr++, anliegen: r.anliegen, kurz: r.kurz, ziel: r.ziel, fehlt: r.fehlt, gefahr: r.gefahr && r.notruf, zeit: "Probe " + jetzt().slice(0, 5), stand: "offen", von: null, probe: true };
+  tickets.unshift(t);
+  letzter = { r: r, ticket: t.id };
+  logge("", "Probeanruf „" + b.n + "“: " + ANLIEGEN[r.anliegen] + ", geht an " + ZIEL[r.ziel].n + ". Ticket " + t.id + ".");
+  zeigeAlles();
+}
+
+/* ---------- Start ---------- */
+(function () {
+  Object.keys(FELDER).forEach(function (a) { L.feld[a] = {}; FELDER[a].forEach(function (f) { L.feld[a][f] = true; }); });
+  PID.forEach(function (p) { $("wer").appendChild(h("option", { value: p, text: P[p].n + ", " + P[p].r })); });
+  BEISPIELE.forEach(function (b) { $("beispiel").appendChild(h("option", { value: b.id, text: b.n })); });
+  $("wer").value = "albrecht";
+  ["input", "change"].forEach(function (ev) { $("wer").addEventListener(ev, function () { $("fehlerLeitfaden").textContent = ""; $("fehlerFreigabe").textContent = ""; zeigeTickets(); }); });
+  $("bAnrufen").addEventListener("click", anrufen);
+  $("bFreigeben").addEventListener("click", freigeben);
+  $("abw-weber").addEventListener("change", function () {
+    abwWeber = $("abw-weber").checked;
+    logge("weber", abwWeber ? "Bereitschaft nicht erreichbar. Sven Krause übernimmt." : "Bereitschaft wieder erreichbar.");
+    zeigeAlles();
+  });
+  tickets.push({ id: "T-" + laufendeNr++, anliegen: "stoerung", kurz: "Muster Bäckerei in Beispielstadt. Kühltheke im Laden. Beleuchtung flackert, Kühlung läuft. Seit heute Nachmittag", ziel: "disposition", fehlt: [], gefahr: false, zeit: "02.12. 19:42", stand: "offen", von: null, probe: false });
+  tickets.push({ id: "T-" + laufendeNr++, anliegen: "rechnung", kurz: "Demo Feinkost in Musterdorf", ziel: "buchhaltung", fehlt: ["rechnung"], gefahr: false, zeit: "02.12. 20:15", stand: "erledigt", von: "richter", probe: false });
+  protokoll.unshift({ zeit: "07:30:00", wer: "keller", was: "Leitfaden, Fassung 3 freigegeben. Alle 5 Probeanrufe bestanden." });
+  protokoll.unshift({ zeit: "08:05:44", wer: "richter", was: "T-102 erledigt." });
+  zeigeAlles();
+})();
+</script>
+</body>
+</html>
